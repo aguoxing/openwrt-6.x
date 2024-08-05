@@ -83,7 +83,7 @@ set ${si}=wifi-iface
 set ${si}.device='${name}'
 set ${si}.network='lan'
 set ${si}.mode='ap'
-set ${si}.ssid='LiBwrt'
+set ${si}.ssid='OpenWrt'
 set ${si}.encryption='none'
 
 `);
