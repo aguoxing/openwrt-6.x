@@ -430,21 +430,21 @@ rpm_resume_exit:
 	return ret;
 }
 
-// static int mhi_system_resume(struct device *dev)
-// {
-// 	int ret = 0;
-// 	struct mhi_controller *mhi_cntrl = dev_get_drvdata(dev);
+static int mhi_system_resume(struct device *dev)
+{
+	int ret = 0;
+	struct mhi_controller *mhi_cntrl = dev_get_drvdata(dev);
 
-// 	ret = mhi_runtime_resume(dev);
-// 	if (ret) {
-// 		MHI_ERR("Failed to resume link\n");
-// 	} else {
-// 		//pm_runtime_set_active(dev);
-// 		//pm_runtime_enable(dev);
-// 	}
+	ret = mhi_runtime_resume(dev);
+	if (ret) {
+		MHI_ERR("Failed to resume link\n");
+	} else {
+		//pm_runtime_set_active(dev);
+		//pm_runtime_enable(dev);
+	}
 
-// 	return ret;
-// }
+	return ret;
+}
 
 int mhi_system_suspend(struct device *dev)
 {
@@ -1057,7 +1057,7 @@ static const struct dev_pm_ops pm_ops = {
 	SET_RUNTIME_PM_OPS(mhi_runtime_suspend,
 			   mhi_runtime_resume,
 			   mhi_runtime_idle)
-	// SET_SYSTEM_SLEEP_PM_OPS(mhi_system_suspend, mhi_system_resume)
+	SET_SYSTEM_SLEEP_PM_OPS(mhi_system_suspend, mhi_system_resume)
 };
 
 static struct pci_device_id mhi_pcie_device_id[] = {

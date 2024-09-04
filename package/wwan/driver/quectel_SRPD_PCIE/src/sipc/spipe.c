@@ -18,6 +18,7 @@
 #include <linux/poll.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+#include <linux/version.h>
 
 #include "../include/sipc.h"
 #include "sipc_priv.h"
@@ -438,8 +439,11 @@ static void spipe_platform_device_unreigster(void)
 int spipe_init(void)
 {
 	int ret;
-
+#if (LINUX_VERSION_CODE > KERNEL_VERSION( 6,6,0 ))
+	spipe_class = class_create("spipe");
+#else
 	spipe_class = class_create(THIS_MODULE, "spipe");
+#endif
 	if (IS_ERR(spipe_class))
 		return PTR_ERR(spipe_class);
 #ifndef SPRD_PCIE_USE_DTS

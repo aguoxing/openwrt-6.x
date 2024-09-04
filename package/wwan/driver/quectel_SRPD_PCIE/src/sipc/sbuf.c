@@ -1478,7 +1478,7 @@ void sbuf_get_status(u8 dst, char *status_info, int size)
 					phead = "rxwait task";
 				else
 					phead = "select task";
-
+#if (LINUX_VERSION_CODE < KERNEL_VERSION( 5,15,0 ))
 				snprintf(
 					 status_info + len,
 					 size - len,
@@ -1486,6 +1486,15 @@ void sbuf_get_status(u8 dst, char *status_info, int size)
 					 phead,
 					 cnt, task->comm,
 					 task->state, task->pid);
+#else
+				snprintf(
+					 status_info + len,
+					 size - len,
+					 "%s %d: %s, state=0x%lx, pid=%d.\n",
+					 phead,
+					 cnt, task->comm,
+					 task->__state, task->pid);
+#endif
 				cnt++;
 				len = strlen(status_info);
 			}
@@ -1567,10 +1576,17 @@ static void sbuf_debug_task_show(struct seq_file *m,
 				   n,
 				   buf,
 				   cnt);
+#if (LINUX_VERSION_CODE < KERNEL_VERSION( 5,15,0 ))
 			seq_printf(m, ": %s, state = 0x%lx, pid = %d\n",
 				   task->comm,
 				   task->state,
 				   task->pid);
+#else
+			seq_printf(m, ": %s, state = 0x%lx, pid = %d\n",
+				   task->comm,
+				   task->__state,
+				   task->pid);
+#endif
 			cnt++;
 		}
 		spin_unlock_irqrestore(

@@ -231,7 +231,11 @@ static void sprd_pcie_iommu_init(struct device *dev)
 			dev_info(dev, "sprd_pcie_iommu_init iova:%d have been used", (u32)addr);
 			continue;
 		}
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION( 6,6,0 ))
+		ret = iommu_map(domain, addr, addr, pg_size, IOMMU_READ | IOMMU_WRITE,GFP_KERNEL);
+#else
 		ret = iommu_map(domain, addr, addr, pg_size, IOMMU_READ | IOMMU_WRITE);
+#endif
 		if (ret) {
 			dev_info(dev, "sprd_pcie_iommu_init iommu_map failed");
 			return;

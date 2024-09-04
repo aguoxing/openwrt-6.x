@@ -18,6 +18,7 @@
 #include <linux/poll.h>
 #include <linux/slab.h>
 #include <linux/of_device.h>
+#include <linux/version.h>
 
 #include "../include/sipc.h"
 #include "spool.h"
@@ -500,8 +501,11 @@ static struct platform_device spool_device = {
 int spool_init(void)
 {
 	int ret;
-
+#if (LINUX_VERSION_CODE > KERNEL_VERSION( 6,6,0 ))
+	spool_class = class_create("spool");
+#else
 	spool_class = class_create(THIS_MODULE, "spool");
+#endif
 	if (IS_ERR(spool_class))
 		return PTR_ERR(spool_class);
 #ifndef SPRD_PCIE_USE_DTS

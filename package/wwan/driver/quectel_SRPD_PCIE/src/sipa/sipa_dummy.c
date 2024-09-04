@@ -35,6 +35,7 @@
 #include <linux/netdev_features.h>
 #include <linux/mutex.h>
 #include <net/arp.h>
+#include <linux/version.h>
 
 #include "sipa_eth.h"
 #include "sipa_core.h"
@@ -432,12 +433,22 @@ static int sipa_dummy_probe(struct platform_device *pdev)
 	netdev->irq = 0;
 	netdev->dma = 0;
 	netdev->features &= ~(NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM | NETIF_F_HW_CSUM);
-	random_ether_addr(netdev->dev_addr);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0)
+	eth_random_addr(netdev->dev_addr);
+	netif_napi_add_weight(netdev,
+		       &sipa_dummy->napi,
+		       sipa_dummy_rx_poll_handler,
+		       SIPA_DUMMY_NAPI_WEIGHT);
+
+#else
+	random_ether_addr(netdev->dev_addr);
 	netif_napi_add(netdev,
 		       &sipa_dummy->napi,
 		       sipa_dummy_rx_poll_handler,
 		       SIPA_DUMMY_NAPI_WEIGHT);
+#endif
+
 
 	/* Register new Ethernet interface */
 	ret = register_netdev(netdev);
