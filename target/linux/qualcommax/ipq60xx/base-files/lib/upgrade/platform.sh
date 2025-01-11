@@ -37,6 +37,7 @@ platform_do_upgrade() {
 	zn,m2|\
 	qihoo,v6|\
 	redmi,ax5|\
+	wf,hr6001|\
 	xiaomi,ax1800|\
 	glinet,gl-axt1800|\
 	glinet,gl-ax1800|\
